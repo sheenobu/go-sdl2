@@ -123,6 +123,17 @@ func OpenFontIndexRW(src *sdl.RWops, freesrc, size, index int) (*Font, error) {
 	return &Font{f}, nil
 }
 
+// OpenFontBytes loads font from bytes
+func OpenFontBytes(b []byte, size int) (*Font, error) {
+	_ptr := *(*uintptr)(unsafe.Pointer(&b))
+	_rw := sdl.RWFromMem(unsafe.Pointer(_ptr), len(b))
+	if _rw == nil {
+		return nil, errors.New("Could not load font in RWOps")
+	}
+
+	return OpenFontRW(_rw, 0, size)
+}
+
 // RenderUTF8_Solid (https://www.libsdl.org/projects/SDL_ttf/docs/SDL_ttf_44.html#SEC44)
 func (f *Font) RenderUTF8_Solid(text string, color sdl.Color) (*sdl.Surface, error) {
 	_text := C.CString(text)
